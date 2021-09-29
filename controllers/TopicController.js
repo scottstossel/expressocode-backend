@@ -9,6 +9,16 @@ const getAllTopics = async (req, res) => {
   }
 }
 
+const getTopic = async (req, res) => {
+  const {id} = req.params;
+  const topic = await Topic.findById(id);
+  try {
+    return res.status(200).json(topic);
+  } catch (error) {
+    return res.status(500).json({message: "Couldn't find topics"});
+  }
+}
+
 const createTopic = async (req, res) => {
   const topic = await Topic.create(req.body);
   try {
@@ -19,8 +29,8 @@ const createTopic = async (req, res) => {
 }
 
 const updateTopic = async (req, res) => {
-  const { _id } = req.params;
-  const topic = await Topic.findByIdAndUpdate(_id, req.body, {new: true});
+  const { id } = req.params;
+  const topic = await Topic.findByIdAndUpdate(id, req.body, {new: true});
   try {
     return res.status(202).json(topic);
   } catch (error) {
@@ -29,8 +39,8 @@ const updateTopic = async (req, res) => {
 }
 
 const deleteTopic = async (req, res) => {
-  const {_id} = req.params;
-  const topicToDelete = await Topic.findByIdAndDelete(_id);
+  const {id} = req.params;
+  const topicToDelete = await Topic.findByIdAndDelete(id);
   try {
     return res.json({message: "Topic successfully deleted "});
   } catch (error) {
@@ -42,5 +52,6 @@ module.exports = {
   getAllTopics,
   createTopic,
   updateTopic,
-  deleteTopic
+  deleteTopic,
+  getTopic
 }

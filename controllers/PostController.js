@@ -8,7 +8,7 @@ exports.getAllPosts = async (req, res) => {
     if (posts.length === 0) {
       return res.status(400).json({ message: "Didn't find any posts" });
     }
-    return res.status(200).json(meetings);
+    return res.status(200).json(posts);
   } catch (error) {
     return res.status(500).json({ message: "Couldn't get the posts" });
   }
@@ -16,7 +16,9 @@ exports.getAllPosts = async (req, res) => {
 
 exports.getPostById = async (req, res) => {
   const { id } = req.params;
-  const post = await Post.findById(id).populate("user", "username");
+  const post = await Post.findById(id)
+  .populate("user", "username")
+  .populate("topic", "name");
   try {
     return res.status(200).json(post);
   } catch (error) {

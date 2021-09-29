@@ -5,6 +5,9 @@ const TopicSchema = Schema(
     name: {
       type: String,
       required: true
+    },
+    description: {
+      type: String
     }
   }
 )

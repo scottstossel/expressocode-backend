@@ -1,20 +1,8 @@
 const bcrypt = require('bcryptjs');
 const { generateJwt } = require('../middlewares/processJwt');
-const cloudinary = require('cloudinary').v2;
 
 const User = require('../models/User');
 
-const getAllUsers = async (req, res) => {
-  const users = await User.find();
-  try {
-    if (users.length === 0) {
-      return res.status(400).json({message: "No users found ಠ_ಠ"});
-    }
-    return res.status(200).json(users);
-  } catch (error) {
-    return res.status(500).json({message: "Couldn't get the users (╯°□°）╯︵ ┻━┻"});
-  }
-}
 
 const signUpUser = async (req, res) => {
   const { email } = req.body;
@@ -30,6 +18,32 @@ const signUpUser = async (req, res) => {
     return res.status(201).json(user);
   } catch (error) {
     return res.status(500).json({message: "Couldn't create the user"});
+  }
+}
+
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({email});
+  if (!user) {
+    return res.status(500).json({message: "Please check credentials"});
+  }
+  const validPassword = bcrypt.compareSync(password, user.password);
+  if (!validPassword) {
+    return res.status(500).json({message: "Please check credentials"});
+  } 
+  const token = await generateJwt(user._id);
+  return res.status(200).json({user, token});
+}
+
+const getAllUsers = async (req, res) => {
+  const users = await User.find();
+  try {
+    if (users.length === 0) {
+      return res.status(400).json({message: "No users found ಠ_ಠ"});
+    }
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(500).json({message: "Couldn't get the users (╯°□°）╯︵ ┻━┻"});
   }
 }
 
@@ -61,23 +75,9 @@ const uploadProfileImg = async (req, res) => {
   }
 }
 
-const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({email});
-  if (!user) {
-    return res.status(500).json({message: "Please check credentials"});
-  }
-  const validPassword = bcrypt.compareSync(password, user.password);
-  if (!validPassword) {
-    return res.status(500).json({message: "Please check credentials"});
-  } 
-  const token = await generateJwt(user._id);
-  return res.status(200).json({user, token});
-}
-
 module.exports = {
-  getAllUsers,
   signUpUser,
-  uploadProfileImg,
-  loginUser
+  loginUser,
+  getAllUsers,
+  uploadProfileImg
 }

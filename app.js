@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 
@@ -24,9 +25,10 @@ app.use(fileUpload({
 app.use(morgan('dev'));
 
 //routes
-app.use('/api/auth', require('./routes/auth'));
+app.use('/api/user', require('./routes/user'));
 app.use('/api/topic', require('./routes/topic'));
 app.use('/api/post', require('./routes/post'));
+app.use('/api/comment', require('./routes/comment'));
 
 
 //port
