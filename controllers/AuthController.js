@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { generateJwt } = require('../middlewares/processJwt');
+const cloudinary = require('cloudinary').v2;
 
 const User = require('../models/User');
 
@@ -32,6 +33,34 @@ const signUpUser = async (req, res) => {
   }
 }
 
+const uploadProfileImg = async (req, res) => {
+  const { id } = req.params;
+  const userToUpdate = await User.findById(id);
+
+  if (userToUpdate.img) {
+    let array = userToUpdate.img.split('/');
+    userToUpdate.img = "";
+    let fileName = array[array.length-1];
+    const [public_id] = fileName.split('.');
+    try {
+      await cloudinary.uploader.destroy(public_id);
+    } catch (error) {
+      console.log('no cloudinary image');
+    }
+  }
+
+  const {tempFilePath} = req.files.image;
+
+  const {secure_url} = await cloudinary.uploader.upload(tempFilePath);
+  userToUpdate.img = secure_url;
+  await userToUpdate.save();
+  try {
+    return res.status(201).json(userToUpdate);
+  } catch (error) {
+    return res.status(500).json({message: "There was an error uploading the image"});
+  }
+}
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({email});
@@ -49,5 +78,6 @@ const loginUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   signUpUser,
+  uploadProfileImg,
   loginUser
 }

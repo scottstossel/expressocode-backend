@@ -10,3 +10,5 @@ router.post('/topic', createTopic);
 router.put('/topic/:id', updateTopic);
 
 router.delete('/topic/:id', deleteTopic);
+
+module.exports = router;

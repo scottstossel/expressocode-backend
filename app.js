@@ -1,10 +1,7 @@
 const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const session = require('express-session');
 const cors = require('cors');
-const errorHandler = require('errorhandler');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 
 const app = express();
 
@@ -18,10 +15,19 @@ mongoose.connect(process.env.API_URL)
 //middlewares
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(fileUpload({
+  useTempFile: true,
+  tempFileDir: '/tmp/',
+  createParentPath: true
+}));
+app.use(morgan('dev'));
 
 //routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/topic', require('./routes/topic'));
+app.use('/api/post', require('./routes/post'));
+
 
 //port
 const port = process.env.PORT;
