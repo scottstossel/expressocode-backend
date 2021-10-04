@@ -24,6 +24,10 @@ const PostSchema = Schema(
       required: true,
       ref: 'Topic'
     },
+    summary: {
+      type: String,
+      required: true
+    },
     likes: {
       type: Number,
       default: 0
