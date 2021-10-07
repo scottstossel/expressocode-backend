@@ -25,7 +25,7 @@ const PostSchema = Schema(
       ref: 'Topic'
     },
     likes: {
-      type: Number,
+      type: [Schema.Types.ObjectId],
       default: 0
     }
   },
