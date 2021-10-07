@@ -3,7 +3,7 @@ const Comment = require('../models/Comment');
 exports.getAllComments = async (req, res) => {
   const comments = await Comment.find()
     .populate("user", "username")
-    .populate("post", "name");
+    .populate("post", "title");
   try {
     if (comments.length === 0) {
       return res.status(400).json({ message: "Could not find any comments"});
@@ -18,7 +18,7 @@ exports.getComment = async (req, res) => {
   const {id} = req.params;
   const comment = await Comment.findById(id)
   .populate("user", "username")
-  .populate("post", "name");
+  .populate("post", "title");
   try {
     return res.status(200).json(comment);
   } catch (error) {

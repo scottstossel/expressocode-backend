@@ -24,16 +24,13 @@ const PostSchema = Schema(
       required: true,
       ref: 'Topic'
     },
-    summary: {
-      type: String,
-      required: true
-    },
     likes: {
       type: Number,
       default: 0
     }
   },
-    {timestamps: true}
+    {timestamps: true},
+    {minimize: false}
 );
 
 module.exports = model('Post', PostSchema);
