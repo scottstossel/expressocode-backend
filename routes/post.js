@@ -6,7 +6,8 @@ const {
   getPostById,
   createPost,
   updatePost,
-  deletePost
+  deletePost,
+  likePost
 } = require("../controllers/PostController");
 
 const { validateJwt } = require('../middlewares/processJwt');
@@ -18,6 +19,8 @@ router.get('/post/:id', getPostById);
 router.post('/post', validateJwt, createPost);
 
 router.put('/post/:id', validateJwt, updatePost);
+
+router.put('/post/like/:id', likePost);
 
 router.delete('/post/:id', validateJwt, deletePost);
 

@@ -37,18 +37,24 @@ exports.createPost = async (req, res) => {
 
 // PUT/post
 exports.likePost = async (req, res) => {
-  // params.id -> id of the post, to know which update
-  // find the postById()
-  // const likes = post.likes;
-  // if (likes.contains)
-  // if (arr.indexOf('lasdkjflaksdjflasdf875875') !== -1) console.log("User already liked post");
-  // once you have the const, look for all the ids inside the 'likes' of the post
-  // if (you find an id of the user) -> exit, he already like the post,
-  // otherwise get all the ids into a new array
-  // new_arr = [...old_id, new_user_id]
-  //post.likes = new_array
-  // post.save()
-
+  const {id} = req.params;
+  console.log("POST",id)
+  const findPost = await Post.findById(id);
+  try {
+    const {userId} = req.body;
+    console.log("USERID", userId)
+    // const {likes} = findPost;
+    console.log("LIKES", findPost.likes)
+    if (findPost.likes.indexOf(userId) !== -1) {
+      return res.json({message: "Already Liked the post"});
+    }
+    findPost.likes.push(userId);
+    console.log("LIKES",findPost.likes)
+    findPost.save();
+    return res.json(findPost);
+  } catch (error) {
+    return res.status(500).json({ message: "Couldn't like post"});
+  }
 }
 
 exports.updatePost = async (req, res) => {
